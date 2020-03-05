@@ -1,3 +1,0 @@
-OpenJDK 64-Bit Server VM (25.181-b13) for linux-amd64 JRE (1.8.0_181-8u181-b13-2~deb9u1-b13), built on Oct 22 2018 18:05:23 by "pbuilder" with gcc 6.3.0 20170516
-Memory: 4k page, physical 32677680k(24904392k free), swap 4194300k(4194300k free)
-CommandLine flags: -XX:InitialHeapSize=67108864 -XX:MaxHeapSize=67108864 -XX:+PrintGC -XX:+PrintGCTimeStamps -XX:+UseCompressedClassPointers -XX:+UseCompressedOops -XX:+UseParallelGC 

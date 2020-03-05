@@ -4,5 +4,7 @@
 *.code-workspace
 **/*.pyc
 
-Judger/ProblemData
+Judger/ProblemData/*
+Judger/logs/*
+Judger/temp/*
 git-push.sh
