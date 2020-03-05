@@ -25,11 +25,10 @@ class STATUE(IntEnum):
 to_choices = lambda enum: tuple([(int(v), str(v).split(".")[1]) for v in enum])
 
 class Submition(models.Model):
-    judge_method = models.CharField(max_length=10) # 判题方法
     pid = models.IntegerField() # 问题id
     ptitle = models.CharField(max_length = 50, default="")
     contestid = models.IntegerField(default=-1) # 比赛归属
-    username = models.CharField(max_length=20) # 提交人
+    user = models.CharField(max_length=20) # 提交人
 
     timestamp = models.DateTimeField(auto_now_add=True)
 

@@ -49,4 +49,11 @@ class RabbitMQ:
         """
         单次置入数据
         """
-        pass
+        self.channel.basic_publish(
+            exchange="",
+            routing_key=self.queue,
+            body=json.dumps(dict(data)),
+            properties=pika.BasicProperties(
+                delivery_mode=2,  # make message persistent
+            ),
+        )

@@ -3,6 +3,7 @@
 **/__pycache__
 *.code-workspace
 **/*.pyc
+**/migrations
 
 Judger/ProblemData/*
 Judger/logs/*

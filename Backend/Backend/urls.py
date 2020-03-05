@@ -1,8 +1,8 @@
 from django.contrib import admin
 from django.conf.urls import url, include
-from rest_framework import routers
 
 urlpatterns = [
-    url('^admin/', admin.site.urls),
-    url('^api/submition/', include("submition.urls"))
+    url(r'^admin/', admin.site.urls),
+    url(r'^api/submition/', include("submition.urls")),
+    url(r'^api/problem/', include('problem.urls')),
 ]

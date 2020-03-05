@@ -3,8 +3,6 @@ from django.views.decorators.csrf import csrf_exempt
 
 from rest_framework.decorators import api_view
 from rest_framework.views import APIView
-from rest_framework.parsers import JSONParser
-from rest_framework.response import Response
 from rest_framework import status
 
 from datetime import datetime
@@ -13,27 +11,19 @@ from Backend.settings import JUDGER_KEYGEN
 from problem.models import Problem
 from problem.serializers import ProblemJQSerializer
 from rabbitmq import RabbitMQ
+from statue_api import Statue
 
-from .serializers import SubmitionSerializer, SubmitionJQSerializer
+from .serializers import SubmitionSerializer, SubmitionListSerializer,SubmitionJQSerializer
 from .models import Submition, STATUE
 
 
-def Submition_to_QueueData(submition):
-    ret = SubmitionJQSerializer(data=submition).data.copy()
-    try:
-        problem = Problem.objects.get(id=ret["pid"])
-        ret.append(ProblemJQSerializer(problem).data())
-        print(ret)
-        return ret
-
-
-class SubmitionsView(APIView):
+class SubmitionALLView(APIView):
     def get(self, request):
         """
         提交列表
         """
         submitions = Submition.objects.all()
-        serializer = SubmitionSerializer(submitions, many=True)
+        serializer = SubmitionListSerializer(submitions, many=True)
         return JsonResponse(serializer.data, safe=False)
     
 
@@ -49,10 +39,10 @@ class SubmitionView(APIView):
             serializer = SubmitionSerializer(submition)
             return JsonResponse(serializer.data, safe=False)
         except BaseException:
-            return JsonResponse(
-                {'error':404, 'detials':'Submition not found'}, 
-                status=status.HTTP_404_NOT_FOUND
-            )
+            return Statue(
+                status.HTTP_404_NOT_FOUND,
+                'Submition not found'
+            ).to_JsonResponse()
 
     def post(self, request):
         """
@@ -68,22 +58,36 @@ class SubmitionView(APIView):
         if serializer.is_valid():
             
             try:
-                data = Submition_to_QueueData(serializer.data)
+                qsubmition = SubmitionJQSerializer(data=serializer.validated_data)
+                if not qsubmition.is_valid():
+                    return Statue(
+                        status.HTTP_500_INTERNAL_SERVER_ERROR,
+                        "Error at line 65:\n" + qsubmition.errors
+                    ) 
+                ret = qsubmition.data.copy()
+                
+                problem = ProblemJQSerializer(
+                    Problem.objects.get(id=qsubmition.data["pid"])
+                )
+                ret.update(problem.data)
                 serializer.save()
-                RabbitMQ().put(data)
+                ret['id'] = serializer.data['id']
+                RabbitMQ().put(ret)
                 return JsonResponse(
                     serializer.data,
                     status=status.HTTP_201_CREATED
                 )
             except BaseException as e:
-                return JsonResponse(
-                    {"code":500, "detial": str(e)},
-                    status=status.HTTP_500_INTERNAL_SERVER_ERROR
-                )
-        return JsonResponse(
-            serializer.errors,
-            status=status.HTTP_400_BAD_REQUEST
-        )
+                raise e
+                return Statue(
+                    status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    "Error at line 81:\n" + str(e)
+                ).to_JsonResponse()
+
+        return Statue(
+            status.HTTP_400_BAD_REQUEST,
+            "Error at line 86:\n" + serializer.errors
+        ).to_JsonResponse()
 
 class AdminAPI(APIView):
     def get(self, request):
@@ -110,16 +114,17 @@ class JudgeAPI(APIView):
                     submition.statue_detail = data["case"]
                 submition.judger_msg = data["msg"]
                 submition.save()
-                return JsonResponse(
-                    {"code": 202},
-                    status=status.HTTP_202_ACCEPTED
-                )
-            return JsonResponse(
-                {'code': 403, 'detials': 'Judger keygen error!'},
-                statue=status.HTTP_403_FORBIDDEN
-            )
-        return JsonResponse(
-            {'code':403, 'detials':'You are NOT ALLOWED to use this page'}, 
-            status=status.HTTP_403_FORBIDDEN
-        )
+                return Statue(
+                    status.HTTP_202_ACCEPTED
+                ).to_JsonResponse()
+
+            return Statue(
+                status.HTTP_403_FORBIDDEN,
+                'Judger keygen error!'
+            ).to_JsonResponse()
+
+        return Statue(
+            status.HTTP_403_FORBIDDEN,
+            'You are NOT ALLOWED to use this page' 
+        ).to_JsonResponse()
 
