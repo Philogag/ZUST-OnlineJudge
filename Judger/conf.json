@@ -1,0 +1,11 @@
+{
+  "queue host": "rabbitmq",
+  "queue port": 5672,
+  "backend host": "localhost:8000",
+  "judger keygen": "it is right",
+  "username": "OnlineJudge",
+  "password": "OnlineJudge",
+  "judge queue": "JudgeQueue",
+  "return queue": "ReturnQueue",
+  "java time": 3
+}

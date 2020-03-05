@@ -1,0 +1,22 @@
+version: '3'
+services:
+  
+  rabbitmq:
+    image: rabbitmq:management
+    restart: always
+    environment:
+      - RABBITMQ_DEFAULT_USER=OnlineJudge
+      - RABBITMQ_DEFAULT_PASS=OnlineJudge
+    ports: ["5672:5672", "15672:15672"]
+
+#   judger:
+#     image: philogag/judger
+#     # build: ./Judger
+#     restart: always
+#     volumes:
+#       - "./Judger/conf.json:/Judger/conf.json"
+#       - "./Judger/ProblemData:/Judger/ProblemData"
+#     depends_on:
+#       - rabbitmq
+#     links:
+#       - rabbitmq:rabbitmq
