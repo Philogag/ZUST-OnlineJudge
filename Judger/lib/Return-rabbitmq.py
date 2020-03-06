@@ -1,3 +1,5 @@
+# 此文件已废弃
+
 import pika
 import json
 import time

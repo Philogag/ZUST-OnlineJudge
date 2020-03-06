@@ -7,8 +7,8 @@ from lib.tool.Conf import *
 from lib.tool.logging import *
 
 # show debug info
-LogManager().CONSOLE_LOG_LEVEL = WARN
-LogManager().FILE_LOG_LEVEL = WARN
+LogManager().CONSOLE_LOG_LEVEL = INFO
+LogManager().FILE_LOG_LEVEL = INFO
 
 LOGGER = getLogger(__name__)
 LOGGER.info("Server Start!")

@@ -13,7 +13,11 @@ class Return:
         data["judger-keygen"] = GlobalConf["judger keygen"]
         data["judger-time"] = datetime.timestamp(datetime.now())
 
-        url = "http://" + GlobalConf["backend host"] + "/api/submition/judger"
+        data['result'] = int(data['result'])
+        if not 'case' in data.keys():
+            data['case'] = "[]"
+
+        url = "http://" + GlobalConf["backend host"] + "/api/submition/judger/"
         
         response = requests.post(url, data)
         while response.status_code != 202:

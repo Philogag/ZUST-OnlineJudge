@@ -7,5 +7,7 @@
   "password": "OnlineJudge",
   "judge queue": "JudgeQueue",
   "return queue": "ReturnQueue",
+
+  "avaid lang": ["c", "c++", "py2", "py3"],
   "java time": 3
 }

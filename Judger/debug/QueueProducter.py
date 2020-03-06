@@ -23,7 +23,7 @@ class myRabbitmqConnecter:
             self.connection.close()
         print("Connection stop")
 
-    def putIntoQueue(self, text, queue):
+    def putIntoQueue(self, text):
         self.channel.basic_publish(
             exchange="",
             routing_key="JudgeQueue",
@@ -44,70 +44,12 @@ globaldir = {
     "judger": "Local",
 }
 
-ID = 0
-
-def sid():
-    global ID
-    ID += 1
-    return ID
-
-## 此函数将产生json
-def createCPP():
-    r = globaldir.copy()
-    r["submitId"] = sid()
-    r["lang"] = "c++11"
-    r[
-        "code"
-    ] = """#include <iostream>
-using namespace std;
-int main()
-{
-    int a, b;
-    cin >> a >> b;
-    cout << a + b << endl;
-}"""
-    return json.dumps(r)
-
-
-def createJAVA():
-    r = globaldir.copy()
-    r["submitId"] = sid()
-    r["lang"] = "java"
-    r[
-        "code"
-    ] = """import java.util.*;
-public class Main
-{
-    public static void main(String args[])
-    {
-        int[] x = new int[5000000];
-        Scanner cin = new Scanner(System.in);
-        int a, b;
-        a = cin.nextInt();
-        b = cin.nextInt();
-        System.out.println(a + b);
-    }
-}"""
-    return json.dumps(r)
-
-
-def createPY3():
-    r = globaldir.copy()
-    r["submitId"] = sid()
-    r["lang"] = "python3"
-    r[
-        "code"
-    ] = """a, b = input().split(" ")
-print(int(a) + int(b))
-"""
-    return json.dumps(r)
+data = {"id": 1, "lang": "c++", "judge_method": 0, "code": "#include<iostream>\nusing namespace std;\nint main()\n{\n\tint a,b;\n\tcin >> a >> b;\n\tcout << a + b << endl;\n}", "pid": 1, "real_pid": -1, "spj": False, "time_limit": 1000, "mem_limit": 64}
 
 
 if __name__ == "__main__":
     ID = 0
     rmqc = myRabbitmqConnecter()
-    for i in range(10):
-        rmqc.putIntoQueue(createCPP(), "Local")
-        # rmqc.putIntoQueue(createJAVA(), "Local")
-        rmqc.putIntoQueue(createPY3(), "Local")
+    # for i in range(10):
+    rmqc.putIntoQueue(json.dumps(data))
 

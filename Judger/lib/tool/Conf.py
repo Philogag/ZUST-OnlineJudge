@@ -20,6 +20,7 @@ GlobalConf = {
     "ReturnQueue": "ReturnQueue",
     # ----------------------
     #   Compiler Config
+    "avaid lang": ["c", "c++", "java", "py2", "py3"],
     "java time": 2,
     "JavaPath": "/usr/bin/java",
     "Python2Path": "/usr/bin/python",

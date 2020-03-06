@@ -12,30 +12,16 @@ from .judgeCase import *
 from ...tool.logging import getLogger
 LOGGER = getLogger(__name__)
 
-def getlang(lang):
-    if "c++" in lang:
-        return "c++"
-    elif "c" in lang:
-        return "c"
-    elif "java" in lang:
-        return "java"
-    elif "python2" in lang:
-        return "py2"
-    elif "python3" in lang:
-        return "py3"
-    return None
-
 def localJudge(submition):
-    LOGGER.info("Get a submition id = " + str(submition["submitId"]))
-    Return().send({"submitId": submition["submitId"], "result": RESULT.JUDGING, "msg": ""})
+    LOGGER.info("Get a submition id = " + str(submition["id"]))
+    Return().send({"id": submition["id"], "result": RESULT.JUDGING, "msg": ""})
 
     # 检测语言种类
-    submition["lang"] = getlang(submition["lang"])
-    if submition["lang"] == None:
+    if not submition["lang"] in GlobalConf["avaid lang"]:
         LOGGER.warn("Code language type not found")
         Return().send(  # 此处返回 System Error
             {
-                "submitId": submition["submitId"],
+                "id": submition["id"],
                 "result": RESULT.SYSTEM_ERROR,
                 "msg": "Code language type not found",
             }
@@ -47,7 +33,7 @@ def localJudge(submition):
         LOGGER.warn("Write to file faild")
         Return().send(  # 此处返回 System Error
             {
-                "submitId": submition["submitId"],
+                "id": submition["id"],
                 "result": RESULT.SYSTEM_ERROR,
                 "msg": "Write to file faild",
             }
@@ -60,7 +46,7 @@ def localJudge(submition):
         LOGGER.warn("Compile faild")
         Return().send(  # 此处返回 Compile Error
             {
-                "submitId": submition["submitId"],
+                "id": submition["id"],
                 "result": RESULT.COMPILE_ERROR,
                 "msg": "Compile faild\n" + errcode,
             }
@@ -73,14 +59,14 @@ def localJudge(submition):
 
     case = []
     total_status = RESULT.ACCEPT
-    for f in os.listdir("./ProblemData/%d" % submition["problemId"]):
+    for f in os.listdir("./ProblemData/%d" % submition["pid"]):
         if f[-3:] == ".in":
             onecase = JudgeCase(
-                submition["problemId"],
+                submition["pid"],
                 f[:-3],
                 submition["spj"],
-                submition["time_lim"],
-                submition["mem_lim"],
+                submition["time_limit"],
+                submition["mem_limit"],
                 submition["lang"],
             )
             case.append(onecase)
@@ -97,7 +83,7 @@ def localJudge(submition):
             
             LOGGER.debug(str(total_status))
 
-    ret = {"submitId": submition["submitId"], "result": total_status, "case": case, "msg": "ok"}
+    ret = {"id": submition["id"], "result": total_status, "case": json.dumps(case), "msg": "ok"}
     LOGGER.info("Judge over, return " + str(total_status))
     Return().send(ret)
     return True

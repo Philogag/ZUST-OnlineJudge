@@ -103,19 +103,15 @@ class JudgeAPI(APIView):
         测评机应答
         """
         if request.method == 'POST':
-            data = request.data
+            data = request.data.copy()
             if data["judger-keygen"] == JUDGER_KEYGEN:
-                submition = Submition.objects.get(id=data["submitId"])
+                submition = Submition.objects.get(id=data["id"])
                 submition.statue = data["result"]
-                if data["result"] == STATUE.SYSTEM_ERROR \
-                    or data["result"] == STATUE.COMPILE_ERROR:
-                    submition.statue_detail = ""
-                else:
-                    submition.statue_detail = data["case"]
+                submition.statue_detail = data["case"]
                 submition.judger_msg = data["msg"]
                 submition.save()
                 return Statue(
-                    status.HTTP_202_ACCEPTED
+                    status.HTTP_202_ACCEPTED, 'Accept.'
                 ).to_JsonResponse()
 
             return Statue(

@@ -19,7 +19,6 @@ class SubmitionJQSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'pid',
-            'contestid',
             'lang',
             'code',
         ]
