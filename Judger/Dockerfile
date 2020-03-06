@@ -10,9 +10,7 @@ RUN apt-get install -y cmake python3 python3-pip openjdk-8-jdk && \
 
 WORKDIR /Judger
 
-COPY ./lib ./lib
-COPY ./SandBox ./SandBox 
-COPY ./conf.json ./main.py ./requirements.txt /Judger/
+COPY . ./
 
 RUN pip3 install -r requirements.txt
 
