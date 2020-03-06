@@ -5,7 +5,9 @@
     - [Static Value](#static-value)
     - [`/api/submition/all/` GET](#apisubmitionall-get)
     - [`/api/submition/(\d+)/` GET](#apisubmitiond-get)
-    - [`/api/submition/new` POST](#apisubmitionnew-post)
+    - [`/api/submition/new/` POST](#apisubmitionnew-post)
+    - [`api/submition/admin/?op=(operator)` GET](#apisubmitionadminopoperator-get)
+      - [Rejudge](#rejudge)
   - [Problem](#problem)
     - [Static Value](#static-value-1)
     - [`/api/problem/all/` GET](#apiproblemall-get)
@@ -48,7 +50,7 @@ Return:
 {"id": 1, "pid": 1, "ptitle": "Local - 1 | A Test Problem", "contestid": -1, "user": "root", "timestamp": "2020-03-05T03:29:16.840304Z", "lang": "c++", "code": "code", "statue": -2, "judger": "localhost", "statue_detail": "", "judger_msg": ""}
 ```
 
-#### `/api/submition/new` POST
+#### `/api/submition/new/` POST
 新建提交，并判题
 POST:
 ```json
@@ -70,6 +72,16 @@ Put into rabbtimq:
 {"id": 1, "lang": "c++", "judge_method": 0, "code": "#include<iostream>\nusing namespace std;\nint main()\n{\n\tint a,b;\n\tcin >> a >> b;\n\tcout << a + b << endl;\n}", "pid": 1, "real_pid": -1, "spj": false, "time_limit": 1000, "mem_limit": 64}
 ```
 
+#### `api/submition/admin/?op=(operator)` GET
+
+##### Rejudge
+operator == "rejudge"
+***extra args:***
+  + `id`: Rejudge the submition whose id is `id`. When using this argument, ignore all of other agrs 
+  + `pid`: Rejudge all the submition whose problem id is `pid`
+  + `statue`: Rejudge all the submition whose problem id is `statue`
+  + `confitm`： Defualt is `False`, when `False`, just return the number of submitions which has been selected, do not rejudge them
+    + Return: `HTTP_200_OK`&`{count:1}`
 ---
 ### Problem
 

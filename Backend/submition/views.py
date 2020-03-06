@@ -1,5 +1,6 @@
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from django.db.models import Q
 
 from rest_framework.decorators import api_view
 from rest_framework.views import APIView
@@ -16,6 +17,21 @@ from statue_api import Statue
 from .serializers import SubmitionSerializer, SubmitionListSerializer,SubmitionJQSerializer
 from .models import Submition, STATUE
 
+def submition_to_qdict(submition=None, data=None, problem=None):
+    qsubmition = None
+    if data != None:
+        qsubmition = SubmitionJQSerializer(data=data)
+        qsubmition.is_valid()
+    else:
+        qsubmition = SubmitionJQSerializer(submition)
+    ret = qsubmition.data.copy()
+    
+    if problem == None:
+        problem = ProblemJQSerializer(
+            Problem.objects.get(id=qsubmition.data["pid"])
+        )
+    ret.update(problem.data)
+    return ret
 
 class SubmitionALLView(APIView):
     def get(self, request):
@@ -58,18 +74,7 @@ class SubmitionView(APIView):
         if serializer.is_valid():
             
             try:
-                qsubmition = SubmitionJQSerializer(data=serializer.validated_data)
-                if not qsubmition.is_valid():
-                    return Statue(
-                        status.HTTP_500_INTERNAL_SERVER_ERROR,
-                        "Error at line 65:\n" + qsubmition.errors
-                    ) 
-                ret = qsubmition.data.copy()
-                
-                problem = ProblemJQSerializer(
-                    Problem.objects.get(id=qsubmition.data["pid"])
-                )
-                ret.update(problem.data)
+                ret = submition_to_qdict(serializer.validated_data.copy())
                 serializer.save()
                 ret['id'] = serializer.data['id']
                 RabbitMQ().put(ret)
@@ -95,7 +100,65 @@ class AdminAPI(APIView):
         管理员操作接口
         功能: 1.重判 2.删除提交
         """
-        pass # TODO
+        try:
+            operator = request.GET.get('op')
+            if operator == 'rejudge': # 重判
+                uid = request.GET.get('id', default=None)
+                if uid != None:
+                    submition = Submition.objects.get(id=uid)
+                    if submition.statue < 0:
+                        return Statue(
+                            status.HTTP_400_BAD_REQUEST,
+                            'This submiton is already in judging'
+                        ).to_JsonResponse()
+                    RabbitMQ().put(
+                        submition_to_qdict(submition)
+                    )
+                    return Statue(
+                        status.HTTP_202_ACCEPTED,
+                        'ok',
+                    ).to_JsonResponse()
+                else:
+                    pid = request.GET.get('pid', default='*')
+                    statue = request.GET.get('statue', default='*')
+                    confirm = request.GET.get('confirm', default=0)
+                    q = Q()
+                    if pid != '*':
+                        q = q & Q(pid=pid)
+                    if statue != '*':
+                        q = q & Q(statue=statue)
+                    objs = Submition.objects.filter(q)
+
+                    if confirm == 0:
+                        return Statue(
+                            status.HTTP_200_OK,
+                            "{count:%d}" % objs.count()
+                        ).to_JsonResponse()
+                    else:
+                        cnt = 0
+                        for obj in objs:
+                            if obj.statue < 0:
+                                continue
+                            print(obj)
+                            obj.statue = STATUE.WAITING
+                            obj.save()
+                            RabbitMQ().put(
+                                submition_to_qdict(obj)
+                            )
+                            cnt += 1
+                        return Statue(
+                            status.HTTP_200_OK,
+                            "{count:%d}" % cnt,
+                        ).to_JsonResponse()
+
+            elif operator == 'del': # 删除提交
+                pass
+        except BaseException as e:
+            raise e
+        return Statue(
+            status.HTTP_403_FORBIDDEN,
+            'You are NOT ALLOWED to use this page' 
+        ).to_JsonResponse()
 
 class JudgeAPI(APIView):
     def post(self, request):
