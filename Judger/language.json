@@ -1,0 +1,95 @@
+[{
+        "name": "c",
+        "src_name": "code.c",
+        "exec_name": "code.out",
+        "complie": {
+            "max_cpu_time_ms": 3000,
+            "max_real_time_ms": 5000,
+            "max_memory_mb": 128,
+            "cmd": "/usr/bin/gcc {src_path} -lm -fmax-errors=3 -o {exec_path} -std=c11"
+        },
+        "run": {
+            "cmd": "{exec_path}",
+            "seccomp_rule": "general"
+        }
+    },
+    {
+        "name": "c++",
+        "src_name": "code.cpp",
+        "exec_name": "code.out",
+        "complie": {
+            "max_cpu_time_ms": 3000,
+            "max_real_time_ms": 5000,
+            "max_memory_mb": 128,
+            "cmd": "/usr/bin/g++ {src_path} -lm -fmax-errors=3 -o {exec_path} -std=c++11"
+        },
+        "run": {
+            "cmd": "{exec_path}",
+            "seccomp_rule": "general"
+        }
+    },
+
+    {
+        "name": "cpp-spj",
+        "src_name": "spj.cpp",
+        "exec_name": "spj.out",
+        "complie": {
+            "max_cpu_time_ms": 3000,
+            "max_real_time_ms": 5000,
+            "max_memory_mb": 128,
+            "cmd": "/usr/bin/g++ {src_path} -fmax-errors=3 -o {exec_path} -std=c++11"
+        },
+        "run": {
+            "cmd": "{exec_path} {infile_path} {user_out_file_path}",
+            "seccomp_rule": "general"
+        }
+    },
+
+    {
+        "name": "java",
+        "src_name": "Main.java",
+        "exec_name": "Main",
+        "complie": {
+            "max_cpu_time_ms": 3000,
+            "max_real_time_ms": 5000,
+            "max_memory_mb": -1,
+            "cmd": "/usr/bin/javac {src_path} -d {exec_path_base} -encoding UTF8"
+        },
+        "run": {
+            "cmd": "/usr/bin/java -cp {exec_path_base} -XX:MaxRAM={max_memory_mb}M -Djava.security.manager -Dfile.encoding=UTF-8 -Djava.security.policy=/etc/java_policy -Djava.awt.headless=true Main",
+            "memory_limit_check_only": 1,
+            "multiplicity_time_limit": 3
+        }
+    },
+    {
+        "name": "py2",
+        "src_name": "temp.py",
+        "exec_name": "temp.pyc",
+        "complie": {
+            "max_cpu_time_ms": 3000,
+            "max_real_time_ms": 5000,
+            "max_memory_mb": 128,
+            "cmd": "/usr/bin/python -m py_compile {src_path}"
+        },
+        "run": {
+            "cmd": "/usr/bin/python {exec_path}",
+            "seccomp_rule": "general"
+        }
+    },
+
+    {
+        "name": "py3",
+        "src_name": "temp.py",
+        "exec_name": "__pycache__/temp.cpython-35.pyc",
+        "complie": {
+            "max_cpu_time_ms": 3000,
+            "max_real_time_ms": 5000,
+            "max_memory_mb": 128,
+            "cmd": "/usr/bin/python3 -m py_compile {src_path}"
+        },
+        "run": {
+            "cmd": "/usr/bin/python3 {exec_path}",
+            "seccomp_rule": "general"
+        }
+    }
+]

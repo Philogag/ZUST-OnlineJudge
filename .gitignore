@@ -5,6 +5,7 @@
 **/*.pyc
 **/migrations
 
+Judger/sandbox-bkd
 Judger/ProblemData/*
 Judger/logs/*
 Judger/temp/*

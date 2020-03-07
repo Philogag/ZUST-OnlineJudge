@@ -2,7 +2,8 @@ from datetime import datetime
 import requests
 import json
 
-from .tool.Conf import GlobalConf
+from .logger import getLogger
+from .config import GlobalConf
 
 class Return:
     def __init__(self):

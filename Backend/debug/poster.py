@@ -14,8 +14,19 @@ def submit():
         "ptitle": "Local - 1 | A Test Problem",
         "contestid" : -1,
         "user": "root",
-        "lang": "c++",
-        "code": "#include<iostream>\nusing namespace std;\nint main()\n{\n\tint a,b;\n\tcin >> a >> b;\n\tcout << a + b << endl;\n}"
+        "lang": "java",
+        "code": """import java.util.*;
+class Main
+{
+    public static void main(String args[])
+    {
+        Scanner cin = new Scanner(System.in);
+        int a, b;
+        a = cin.nextInt();
+        b = cin.nextInt();
+        System.out.println(a + b);
+    }
+}"""
     }
     response = requests.post(
         "http://localhost:8000/api/submition/new/",

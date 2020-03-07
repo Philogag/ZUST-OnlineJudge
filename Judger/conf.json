@@ -1,13 +1,13 @@
 {
-  "queue host": "rabbitmq",
-  "queue port": 5672,
   "backend host": "localhost:8000",
   "judger keygen": "it is right",
+
+  "queue host": "localhost",
+  "queue port": 5672,
+
   "username": "OnlineJudge",
   "password": "OnlineJudge",
   "judge queue": "JudgeQueue",
-  "return queue": "ReturnQueue",
 
-  "avaid lang": ["c", "c++", "py2", "py3"],
   "java time": 3
 }

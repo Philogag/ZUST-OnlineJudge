@@ -1,0 +1,7 @@
+/home/yhr/Desktop/ZUST-OnlineJudge/Judger/sandbox/build/CMakeFiles/install/strip.dir
+/home/yhr/Desktop/ZUST-OnlineJudge/Judger/sandbox/build/CMakeFiles/install/local.dir
+/home/yhr/Desktop/ZUST-OnlineJudge/Judger/sandbox/build/CMakeFiles/libjudger.so.dir
+/home/yhr/Desktop/ZUST-OnlineJudge/Judger/sandbox/build/CMakeFiles/edit_cache.dir
+/home/yhr/Desktop/ZUST-OnlineJudge/Judger/sandbox/build/CMakeFiles/rebuild_cache.dir
+/home/yhr/Desktop/ZUST-OnlineJudge/Judger/sandbox/build/CMakeFiles/install.dir
+/home/yhr/Desktop/ZUST-OnlineJudge/Judger/sandbox/build/CMakeFiles/list_install_components.dir

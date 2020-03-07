@@ -26,6 +26,7 @@ def submition_to_qdict(submition=None, data=None, problem=None):
         qsubmition = SubmitionJQSerializer(submition)
     ret = qsubmition.data.copy()
     
+    problem = problem
     if problem == None:
         problem = ProblemJQSerializer(
             Problem.objects.get(id=qsubmition.data["pid"])
@@ -137,8 +138,8 @@ class AdminAPI(APIView):
                     else:
                         cnt = 0
                         for obj in objs:
-                            if obj.statue < 0:
-                                continue
+                           # if obj.statue < 0:
+                           #     continue
                             print(obj)
                             obj.statue = STATUE.WAITING
                             obj.save()

@@ -26,14 +26,14 @@ class RabbitMQ:
 
     def __init__(self,):
         self.queue = QUEUE_NAME
-        username = RABBITMQ_USER
-        password = RABBITMQ_PASS
-        host = RABBITMQ_HOST
-        port = RABBITMQ_PORT
+        self.username = RABBITMQ_USER
+        self.password = RABBITMQ_PASS
+        self.host = RABBITMQ_HOST
+        self.port = RABBITMQ_PORT
 
-        auth = pika.PlainCredentials(username, password)
+        self.auth = pika.PlainCredentials(self.username, self.password)
         self.connection = connection = pika.BlockingConnection(
-            pika.ConnectionParameters(host=host, port=port, credentials=auth)
+            pika.ConnectionParameters(host=self.host, port=self.port, credentials=self.auth)
         )
         if self.connection == None:
             return
@@ -49,11 +49,25 @@ class RabbitMQ:
         """
         单次置入数据
         """
-        self.channel.basic_publish(
-            exchange="",
-            routing_key=self.queue,
-            body=json.dumps(dict(data)),
-            properties=pika.BasicProperties(
-                delivery_mode=2,  # make message persistent
-            ),
-        )
+        try:
+            self.channel.basic_publish(
+                exchange="",
+                routing_key=self.queue,
+                body=json.dumps(dict(data)),
+                properties=pika.BasicProperties(
+                    delivery_mode=2,  # make message persistent
+                ),
+            )
+        except BaseException:
+            self.connection = connection = pika.BlockingConnection(
+                pika.ConnectionParameters(host=self.host, port=self.port, credentials=self.auth)
+            )
+            self.channel = self.connection.channel()
+            self.channel.basic_publish(
+                exchange="",
+                routing_key=self.queue,
+                body=json.dumps(dict(data)),
+                properties=pika.BasicProperties(
+                    delivery_mode=2,  # make message persistent
+                ),
+            )
