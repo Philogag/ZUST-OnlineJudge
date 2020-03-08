@@ -17,7 +17,6 @@ RUN pip3 install -r requirements.txt
 
 RUN cp /Judger/sandbox/java_policy /etc/java_policy && \
     cd /Judger/sandbox && \
-    mkdir build && \
     cd build && \
     cmake .. && make && \
     make install && \
