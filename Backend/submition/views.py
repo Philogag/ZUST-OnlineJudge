@@ -173,6 +173,8 @@ class JudgeAPI(APIView):
                 submition.statue = data["result"]
                 submition.statue_detail = data["case"]
                 submition.judger_msg = data["msg"]
+                submition.max_mem_use_kb = data["max_mem_use_kb"]
+                submition.max_time_use_ms = data["max_time_use_ms"]
                 submition.save()
                 return Statue(
                     status.HTTP_202_ACCEPTED, 'Accept.'

@@ -28,8 +28,6 @@ def complie(lang, code) -> (bool, str):
         return (False, str(e))
     langconf = langconf["complie"]
 
-    print(langconf["cmd"])
-
     cmd = langconf["cmd"].split(" ")
 
     max_memory_mb = langconf["max_memory_mb"] * 1024 * 1024

@@ -40,5 +40,8 @@ class Submition(models.Model):
     statue_detail = models.CharField(max_length=1024 * 1024, default="")
     judger_msg = models.CharField(max_length=100, default="")
 
+    max_mem_use_kb = models.IntegerField(default=0)
+    max_time_use_ms = models.IntegerField(default=0)
+
     def __str__(self):
         return str(self.id)

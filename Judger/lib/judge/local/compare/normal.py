@@ -6,7 +6,7 @@ from lib.config import GlobalConf
 from lib.static import RESULT
 LOGGER = getLogger(__name__)
 
-def normalChecker(pid, case):
+def normalChecker(pid, case) -> (int, str):
     filea = os.path.join(GlobalConf["path"], 'temp/userout.txt')
     fileb = os.path.join(GlobalConf["path"], 'ProblemData/%d/%s.out' % (pid, case))
     

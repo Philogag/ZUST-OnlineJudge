@@ -5,6 +5,24 @@ import json
 from .logger import getLogger
 from .config import GlobalConf
 
+# 单例工具
+def singleton(cls, *args, **kw):
+    instances = {}
+
+    def _singleton():
+        if cls not in instances:
+            instances[cls] = cls(*args, **kw)
+        return instances[cls]
+
+    return _singleton
+
+empty = {
+    "case":"[]",
+    "msg":"ok",
+    "max_mem_use_kb":0,
+    "max_time_use_ms":0
+}
+
 class Return:
     def __init__(self):
         super().__init__()
@@ -15,8 +33,9 @@ class Return:
         data["judger-time"] = datetime.timestamp(datetime.now())
 
         data['result'] = int(data['result'])
-        if not 'case' in data.keys():
-            data['case'] = "[]"
+        for k,v in empty.items():
+            if not k in data.keys():
+                data[k] = v
 
         url = "http://" + GlobalConf["backend host"] + "/api/submition/judger/"
         

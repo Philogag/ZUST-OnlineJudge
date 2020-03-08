@@ -56,7 +56,7 @@ def JudgeCase(submition, case):
         gid=RUN_GROUP_GID,
         memory_limit_check_only=conf["memory_limit_check_only"]
     )
-    LOGGER.debug(str(result["result"]))
+    LOGGER.debug("Run return", str(result["result"]))
     
     for p, s in result.items():
         ret[p] = s

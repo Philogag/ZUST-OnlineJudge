@@ -9,5 +9,7 @@
   "password": "OnlineJudge",
   "judge queue": "JudgeQueue",
 
-  "java time": 3
+  "hdu enabled": false,
+  "hdu username": "hhhh",
+  "hdu password": "12345678"
 }

@@ -6,7 +6,6 @@ import re
 # from .logging import getLogger
 # LOGGER = getLogger(__name__)
 
-global GlobalConf
 GlobalConf = {
     # ----------------------
     #   System Config
@@ -18,8 +17,8 @@ GlobalConf = {
     "password": "guest",
     "judge queue": "LocalJudgeQueue",
     # ----------------------
-    #   Compiler Config
-    "java time": 2,
+    #   HDU judger
+    "hdu enabled": False,
 }
 
 # main.py 的绝对路径

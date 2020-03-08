@@ -24,11 +24,9 @@ def localJudge(submition):
             "msg": "Compile faild\n" + errcode,
         }
 
-    # 检测spj并编译，TODO
-    if submition["spj"] == True:
-        pass
-
     case = []
+    max_mem_use_kb = 0
+    max_time_use_ms = 0
     total_status = RESULT.ACCEPT
     for f in os.listdir("./ProblemData/%d" % submition["pid"]):
         if f[-3:] == ".in":
@@ -48,8 +46,16 @@ def localJudge(submition):
             else:
                 total_status = RESULT.MULTI_ERROR
             
+            max_mem_use_kb = max(max_mem_use_kb, onecase["memory"] // 1024)
+            max_time_use_ms = max(max_time_use_ms, onecase["real_time"])
             LOGGER.debug(str(total_status))
 
-    ret = {"id": submition["id"], "result": total_status, "case": json.dumps(case), "msg": "ok"}
-    LOGGER.info("Judge over, return " + str(total_status))
+    ret = {
+        "id": submition["id"],
+        "result": total_status,
+        "case": json.dumps(case),
+        "msg": "ok",
+        "max_mem_use_kb":max_mem_use_kb,
+        "max_time_use_ms":max_time_use_ms,
+    }
     return ret

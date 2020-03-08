@@ -67,7 +67,11 @@ class LogManager():
     def __del__(self):
         pass
     
-    def put(self, logs: str, owner, level:int):
+    def put(self, owner, level: int, msgs):
+        logs = ""
+        for s in msgs:
+            s = str(s)
+            logs += s + " "
         timestamp = datetime.now().strftime('%y-%m-%d %H:%M:%S')
         if owner == None:
             owner = "None"
@@ -94,14 +98,14 @@ class Logger():
     manage = LogManager()
     def __init__(self, name):
         self.name = name
-    def error(self, msg:str):
-        self.manage.put(msg, self.name, LOG_LEVEL.ERROR)
-    def warn(self, msg: str):
-        self.manage.put(msg, self.name, LOG_LEVEL.WARN)
-    def info(self, msg: str):
-        self.manage.put(msg, self.name, LOG_LEVEL.INFO)
-    def debug(self, msg: str):
-        self.manage.put(msg, self.name, LOG_LEVEL.DEBUG)
+    def error(self, *msgs):
+        self.manage.put(self.name, LOG_LEVEL.ERROR, msgs)
+    def warn(self, *msgs):
+        self.manage.put(self.name, LOG_LEVEL.WARN, msgs)
+    def info(self, *msgs):
+        self.manage.put(self.name, LOG_LEVEL.INFO, msgs)
+    def debug(self, *msgs):
+        self.manage.put(self.name, LOG_LEVEL.DEBUG, msgs)
 
 def getLogger(name = __name__):
     return Logger(name)
@@ -114,3 +118,5 @@ if __name__ == "__main__":
     LOGGER.warn("warn")
     LOGGER.info("info")
     LOGGER.debug("debug")
+
+    LOGGER.info(1,2,4)

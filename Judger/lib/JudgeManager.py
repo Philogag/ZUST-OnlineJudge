@@ -4,6 +4,7 @@ import os
 from enum import IntEnum
 
 from .judge.local.judgeSubmition import localJudge
+from .judge.hdu.judge import hdujudge
 from .Return import Return
 
 from .config import GlobalConf
@@ -21,10 +22,32 @@ def judgeManager(ch, method, properties, body: bytes):
     Return().send({"id": submition["id"], "result": RESULT.JUDGING, "msg": ""})
 
     ret = {}
-    if submition["judge_method"] == JUDGE_METHOD.Local:
-        ret = localJudge(submition)
+    try:
+        if submition["judge_method"] == JUDGE_METHOD.Local:
+            ret = localJudge(submition)
+        if GlobalConf["hdu enabled"] \
+           and submition["judge_method"] == JUDGE_METHOD.HDU:
+            ret = hdujudge(submition)
 
-    Return().send(ret)
 
-    # ch.basic_ack(delivery_tag=method.delivery_tag)  # 返回完成消息至rabbitmq
+    except BaseException as e:
+        ret = {"id": submition["id"], "result": RESULT.SYSTEM_ERROR, "msg": str(e)}
+        LOGGER.error(str(e))
+        raise e
+    finally:
+        LOGGER.info("Judge over, return " + str(ret["result"]))
+        Return().send(ret)
+
+    ch.basic_ack(delivery_tag=method.delivery_tag)  # 返回完成消息至rabbitmq
     return True
+
+"""
+{
+    id,
+    result,
+    case,
+    msg,
+    max_mem_use_kb,
+    max_time_use_ms
+}
+"""
