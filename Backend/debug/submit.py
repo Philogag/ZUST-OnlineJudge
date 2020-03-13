@@ -3,8 +3,8 @@ import json
 
 def submit():
     values={
-        "pid": 3,
-        "ptitle": "Local - 2 | Spj test problem",
+        "pid": 1,
+        "ptitle": "Local - 1 | Nomal problem",
         "contestid" : -1,
         "user": "root",
         "lang": "c++",
@@ -13,9 +13,9 @@ def submit():
 using namespace std;
 int main()
 {
-    int a[int(1e8)];
-    int a,b;
-    while(1);
+    int a,b; 
+    cin >> a >> b;
+    cout << a + b << endl;
 }
 """
     }
@@ -26,4 +26,13 @@ int main()
     print(response.text)
 
 
+submit()
+submit()
+submit()
+submit()
+submit()
+submit()
+submit()
+submit()
+submit()
 submit()

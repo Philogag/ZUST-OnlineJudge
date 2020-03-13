@@ -3,16 +3,21 @@
 - [接口](#%e6%8e%a5%e5%8f%a3)
   - [Submition](#submition)
     - [Static Value](#static-value)
-    - [`/api/submition/all/` GET](#apisubmitionall-get)
-    - [`/api/submition/(\d+)/` GET](#apisubmitiond-get)
-    - [`/api/submition/new/` POST](#apisubmitionnew-post)
-    - [`api/submition/admin/?op=(operator)` GET](#apisubmitionadminopoperator-get)
+    - [`/api/submition/all/?token=(.*?)` GET](#apisubmitionalltoken-get)
+    - [`/api/submition/(\d+)/?token=(.*?)` GET](#apisubmitiondtoken-get)
+    - [`/api/submition/new/?token=(.*?)` POST](#apisubmitionnewtoken-post)
+    - [`api/submition/admin/?token=(.*?)&op=(operator)` GET](#apisubmitionadmintokenopoperator-get)
       - [Rejudge](#rejudge)
   - [Problem](#problem)
     - [Static Value](#static-value-1)
-    - [`/api/problem/all/` GET](#apiproblemall-get)
-    - [`/api/problem/(\d+)/` GET](#apiproblemd-get)
-    - [`/api/problem/new/` POST](#apiproblemnew-post)
+    - [`/api/problem/all/?token=(.*?)` GET](#apiproblemalltoken-get)
+    - [`/api/problem/(\d+)/?token=(.*?)` GET](#apiproblemdtoken-get)
+    - [`/api/problem/new/?token=(.*?)` POST](#apiproblemnewtoken-post)
+  - [User](#user)
+    - [`api/user/login/$username=(.*?)&password=(.*?)` GET](#apiuserloginusernamepassword-get)
+    - [`api/user/set_password/?token=(.*?)` POST](#apiusersetpasswordtoken-post)
+    - [`api/user/create_user/?token=(.*?)` POST](#apiusercreateusertoken-post)
+    - [`api/user/set_detail/?token=(.*?)` POST](#apiusersetdetailtoken-post)
 
 ---
 ## 接口
@@ -33,7 +38,7 @@ Statues Code
 + JUDGING = -1
 + WAITING = -2
 
-#### `/api/submition/all/` GET
+#### `/api/submition/all/?token=(.*?)` GET
 提交列表
 Return:
 ```json
@@ -43,14 +48,14 @@ Return:
 ]
 ```
 
-#### `/api/submition/(\d+)/` GET
+#### `/api/submition/(\d+)/?token=(.*?)` GET
 提交详情
 Return:
 ```json
 {"id": 1, "pid": 1, "ptitle": "Local - 1 | A Test Problem", "contestid": -1, "user": "root", "timestamp": "2020-03-05T03:29:16.840304Z", "lang": "c++", "code": "code", "statue": -2, "judger": "localhost", "statue_detail": "", "judger_msg": ""}
 ```
 
-#### `/api/submition/new/` POST
+#### `/api/submition/new/?token=(.*?)` POST
 新建提交，并判题
 POST:
 ```json
@@ -72,7 +77,7 @@ Put into rabbtimq:
 {"id": 1, "lang": "c++", "judge_method": 0, "code": "#include<iostream>\nusing namespace std;\nint main()\n{\n\tint a,b;\n\tcin >> a >> b;\n\tcout << a + b << endl;\n}", "pid": 1, "real_pid": -1, "spj": false, "time_limit": 1000, "mem_limit": 64}
 ```
 
-#### `api/submition/admin/?op=(operator)` GET
+#### `api/submition/admin/?token=(.*?)&op=(operator)` GET
 
 ##### Rejudge
 operator == "rejudge"
@@ -98,7 +103,7 @@ Show Level:
 + Show = 1
 + In contest = 2
 
-#### `/api/problem/all/` GET
+#### `/api/problem/all/?token=(.*?)` GET
 题库
 Return:
 ```json
@@ -108,13 +113,13 @@ Return:
 ]
 ```
 
-#### `/api/problem/(\d+)/` GET
+#### `/api/problem/(\d+)/?token=(.*?)` GET
 题面
 Return:
 ```json
 {"id": 1, "judge_method": 0, "real_pid": -1, "writer": "root", "last_edit": "2020-03-05T02:50:21.738491Z", "time_limit": 1000, "mem_limit": 64, "lang_allow": "c;c++;java;py2;py3", "title": "A + B Problem", "cont_detial": "main field", "cont_input": "input field", "cont_output": "output field", "cont_hint": "hint field", "source": "source field", "tags": "debug;", "spj": false, "show_level": 1, "tot_cnt": 0, "ac_cnt": 0, "wa_cnt": 0, "tle_cnt": 0, "mle_cnt": 0, "ce_cnt": 0, "se_cnt": 0, "re_cnt": 0, "me_cnt": 0}
 ```
-#### `/api/problem/new/` POST
+#### `/api/problem/new/?token=(.*?)` POST
 添加/修改题目
 POST:
 ```json
@@ -141,3 +146,22 @@ Return:
 Succeed: 201
 {"id": 1, "judge_method": 0, "real_pid": -1, "writer": "root", "last_edit": "2020-03-05T02:50:21.738491Z", "time_limit": 1000, "mem_limit": 64, "lang_allow": "c;c++;java;py2;py3", "title": "A + B Problem", "cont_detial": "main field", "cont_input": "input field", "cont_output": "output field", "cont_hint": "hint field", "source": "source field", "tags": "debug;", "spj": false, "show_level": 1}
 ```
+
+
+---
+
+### User
+
+#### `api/user/login/$username=(.*?)&password=(.*?)` GET
+
+Succeed Return:
+```json
+Succeed: 200
+{}
+```
+
+#### `api/user/set_password/?token=(.*?)` POST
+
+#### `api/user/create_user/?token=(.*?)` POST
+
+#### `api/user/set_detail/?token=(.*?)` POST

@@ -11,13 +11,13 @@ from lib.config import GlobalConf
 from lib.logger import getLogger
 LOGGER = getLogger(__name__)
 
-def localJudge(submition):
-    LOGGER.info("Get a submition id = " + str(submition["id"]))
+def localJudge(threadid, submition, ):
+    exec_path = os.path.join(GlobalConf["path"], "temp", str(threadid))
 
     # 尝试编译
-    comp, errcode = complie(submition["lang"], submition['code'])
+    comp, errcode = complie(submition["lang"], submition['code'], exec_path, threadid)
     if not comp:
-        LOGGER.warn("Compile faild")
+        LOGGER.warn(threadid, "Compile faild")
         return {
             "id": submition["id"],
             "result": RESULT.COMPILE_ERROR,
@@ -33,6 +33,8 @@ def localJudge(submition):
             onecase = JudgeCase(
                 submition,
                 f[:-3],
+                exec_path,
+                threadid
             )
             case.append(onecase)
             if (
@@ -48,7 +50,7 @@ def localJudge(submition):
             
             max_mem_use_kb = max(max_mem_use_kb, onecase["memory"] // 1024)
             max_time_use_ms = max(max_time_use_ms, onecase["real_time"])
-            LOGGER.debug(str(total_status))
+    # LOGGER.debug("Thread-%d:"%threadid, str(total_status))
 
     ret = {
         "id": submition["id"],

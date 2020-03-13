@@ -9,14 +9,14 @@ def add_problem():
         "time_limit" : 1000,
         "mem_limit": 64,
         "lang_allow": "c;c++;java;py2;py3",
-        "title": "Spj test problem",
+        "title": "spj problem",
         "cont_detial" : "main field",
         "cont_input": "input field",
         "cont_output": "output field",
         "cont_hint": "hint field",
         "source": "source field",
         "tags": "debug;",
-        "spj": True,
+        "spj": False,
         "show_level": 1,
     }
     response = requests.post(

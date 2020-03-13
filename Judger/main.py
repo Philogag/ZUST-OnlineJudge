@@ -1,28 +1,46 @@
 import os
+import shutil  
 import time
 import pika
 
 from lib.RabbitMQ import RabbitmqConnecter
-from lib.JudgeManager import judgeManager
+from lib.JudgeManager import JudgeThread, queueGetCall
 from lib.config import GlobalConf
 from lib.logger import getLogger, LogManager, LOG_LEVEL
-
+from lib.judge.local.complie import COMPILER_USER_UID, COMPILER_GROUP_GID
 
 # show debug info
-LogManager().CONSOLE_LOG_LEVEL = LOG_LEVEL.DEBUG
+LogManager().CONSOLE_LOG_LEVEL = LOG_LEVEL.INFO
 LogManager().FILE_LOG_LEVEL = LOG_LEVEL.INFO
+LogManager.SAVE_OLD_LOG = True
 
 LOGGER = getLogger(__name__)
 LOGGER.info("Server Start!")
 
-if not os.path.isdir("./temp"):
-    os.mkdir("./temp")
+if os.path.isdir("./temp"):
+    shutil.rmtree("./temp")
+os.mkdir("./temp")
+
+ths = []
+for i in range(GlobalConf["judge thread"]):
+    os.mkdir("./temp/%d" % i)
+    os.chown("./temp/%d" % i, COMPILER_USER_UID, COMPILER_GROUP_GID)
+    ths.append(JudgeThread(i))
+
+for th in ths:
+    th.start()
+
 rmq = RabbitmqConnecter()
 while True:
     try:
-        rmq.startListen(judgeManager)
+        rmq.startListen(queueGetCall)
     except KeyboardInterrupt:
         break
-    except pika.exceptions.StreamLostError:
-        pass
+
+for th in ths:
+    th.callquit()
+for th in ths:
+    th.join()
+
 LOGGER.info("Server Stop!")
+

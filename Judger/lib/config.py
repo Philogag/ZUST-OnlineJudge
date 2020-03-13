@@ -16,6 +16,7 @@ GlobalConf = {
     "username": "guest",
     "password": "guest",
     "judge queue": "LocalJudgeQueue",
+    "judge thread": 4,
     # ----------------------
     #   HDU judger
     "hdu enabled": False,

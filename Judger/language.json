@@ -31,8 +31,6 @@
 
     {
         "name": "spj",
-        "src_name": "{pid}.cpp",
-        "exec_name": "{pid}",
         "complie": {
             "max_cpu_time_ms": 3000,
             "max_real_time_ms": 5000,

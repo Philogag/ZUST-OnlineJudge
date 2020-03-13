@@ -14,13 +14,13 @@ LOGGER = getLogger(__name__)
 COMPILER_USER_UID = pwd.getpwnam("compiler").pw_uid
 COMPILER_GROUP_GID = grp.getgrnam("compiler").gr_gid
 
-complie_error_out = os.path.join(GlobalConf["path"], "logs", "CompileError.txt")
-
-def complie(lang, code) -> (bool, str):
+def complie(lang, code, basepath, threadid) -> (bool, str):
     if not lang in LangConf.keys():
         return (False, "Language Not Support!")
     langconf = LangConf[lang]
-    src_path = langconf["src_name"]
+    src_path = os.path.join(basepath, langconf["src_name"])
+    exe_path = os.path.join(basepath, langconf["exec_name"])
+
     try:
         with open(src_path, 'w+') as f:
             f.writelines(code)
@@ -28,11 +28,20 @@ def complie(lang, code) -> (bool, str):
         return (False, str(e))
     langconf = langconf["complie"]
 
-    cmd = langconf["cmd"].split(" ")
+    cmd = langconf["cmd"] \
+        .replace("{src_path}", src_path) \
+        .replace("{exec_path}", exe_path) \
+        .replace("{exec_path_base}", basepath) \
+
+    # LOGGER.debug(cmd)
+
+    cmd = cmd.split(" ")
 
     max_memory_mb = langconf["max_memory_mb"] * 1024 * 1024
     if max_memory_mb < 0:
         max_memory_mb = UNLIMITED
+
+    ce_opath = os.path.join(basepath, "ce.txt")
 
     result = run(
         max_cpu_time=langconf["max_cpu_time_ms"],
@@ -44,26 +53,26 @@ def complie(lang, code) -> (bool, str):
         exe_path=cmd[0],
         args=cmd[1::],             
         input_path='/dev/null',
-        output_path=complie_error_out,
-        error_path=complie_error_out,
+        output_path=ce_opath,
+        error_path=ce_opath,
         env=["PATH=" + os.getenv("PATH")],
-        log_path="./logs/sandbox.log",
+        log_path=os.path.join(basepath, "sandbox.log"),
         seccomp_rule_name=None,
         uid=COMPILER_USER_UID,
         gid=COMPILER_GROUP_GID
     )
 
     if result["result"] != RESULT_SUCCESS:
-        if os.path.exists(complie_error_out):
-            with open(complie_error_out, encoding="utf-8") as f:
+        if os.path.exists(ce_opath):
+            with open(ce_opath, encoding="utf-8") as f:
                 error = f.read().strip()
-                os.remove(complie_error_out)
+                os.remove(ce_opath)
                 if error:
                     return (False, error)
         return (False, "Compiler runtime error, info: %s" % json.dumps(result))
     else:
         try:
-            os.remove(complie_error_out)
+            os.remove(ce_opath)
         except FileNotFoundError:
             pass
         return (True, "")

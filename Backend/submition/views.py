@@ -1,8 +1,6 @@
 from django.http import HttpResponse, JsonResponse
-from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Q
 
-from rest_framework.decorators import api_view
 from rest_framework.views import APIView
 from rest_framework import status
 

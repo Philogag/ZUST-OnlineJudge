@@ -25,18 +25,6 @@ lang_ds = {
         "multiplicity_time_limit": 1
     }
 }
-__basepath = os.path.join(GlobalConf["path"], "temp")
-__replace_partten = (
-    ("{src_path}", lambda x: x["src_name"]),
-    ("{exec_path}", lambda x: x["exec_name"]),
-    ("{exec_path_base}", lambda _: __basepath)
-)
-
-def _replace(x, s: str):
-    for p, func in __replace_partten:
-        s = s.replace(p, func(x))
-    return s
-
 
 def _init():
     confs = None
@@ -54,12 +42,6 @@ def _init():
             for ii in lang_ds["run"].keys():
                 if not ii in c["run"].keys():
                     c["run"][ii] = lang_ds["run"][ii]
-            
-            c["src_name"] = os.path.join(__basepath, c["src_name"])
-            c["exec_name"] = os.path.join(__basepath, c["exec_name"])
-            c["complie"]["cmd"] = _replace(c, c["complie"]["cmd"])
-            c["run"]["cmd"] = _replace(c, c["run"]["cmd"])
-
             LangConf[c["name"]] = c
 
 _init()

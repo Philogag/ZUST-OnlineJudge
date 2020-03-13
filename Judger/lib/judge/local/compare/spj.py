@@ -14,18 +14,18 @@ LOGGER = getLogger(__name__)
 SPJ_USER_UID = pwd.getpwnam("spj").pw_uid
 SPJ_GROUP_GID = grp.getgrnam("spj").gr_gid
 
-def spjChecker(pid, caseid):
+def spjChecker(pid, caseid, basepath, threadid):
 
-    ret, msg = complieSpj(pid)
+    ret, msg = complieSpj(pid, basepath)
     if not ret:
         raise Exception("Spjudge complie error\n" + msg)
 
     spjconf = SpjConf["spj"]["run"]
-    spjlog = os.path.join(GlobalConf["path"], "logs", "spjrun.log")
+    spjlog = os.path.join(basepath, "spjrun.log")
     
-    efile = os.path.join(GlobalConf["path"], "Spj/%d"%pid)
+    efile = os.path.join(basepath, "spj")
     ifile = os.path.join(GlobalConf["path"], "ProblemData/%d/%s.in"%(pid, caseid))
-    uofile = os.path.join(GlobalConf["path"], "temp/userout.txt")
+    uofile = os.path.join(basepath, "userout.txt")
     cmd = spjconf["cmd"]
 
     cmd = cmd.replace("{exec_path}", efile) \
@@ -63,27 +63,23 @@ def spjChecker(pid, caseid):
         raise Exception("Spjudge runtime error!")
 
 
-def complieSpj(pid):
+def complieSpj(pid, basepath, threadid):
     spjconf = SpjConf["spj"]
 
     ifile = os.path.join(GlobalConf["path"], "Spj/%d.cpp"%(pid))
-    ofile = os.path.join(GlobalConf["path"], "Spj/%d"%pid)
+    ofile = os.path.join(basepath, "spj")
 
     spjconf = spjconf["complie"]
 
-    cmd = spjconf["cmd"]
-
-    cmd = cmd.replace("{src_path}", ifile) \
-             .replace("{exec_path}", ofile) \
-             .split(" ")
+    cmd = spjconf["cmd"] \
+        .replace("{src_path}", ifile) \
+        .replace("{exec_path}", ofile) \
+        .split(" ")
 
     if not os.path.isfile(ifile):
         return False, "Spj file not exist"
-    
-    if os.path.isfile(ofile):
-        return True, None
 
-    spjlog = os.path.join(GlobalConf["path"], "logs", "spjcomplie.log")
+    spjlog = os.path.join(basepath, "spjcomplie.log")
 
     result = run(
         exe_path=cmd[0],
@@ -118,8 +114,3 @@ def complieSpj(pid):
         except FileNotFoundError:
             pass
         return (True, "")
-
-
-if __name__ == "__main__":
-    print(spjChecker("./temp/userout.txt", "./ProblemData/1/1.out"))
-

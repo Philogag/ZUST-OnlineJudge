@@ -72,7 +72,6 @@ class LogManager():
         for s in msgs:
             s = str(s)
             logs += s + " "
-        timestamp = datetime.now().strftime('%y-%m-%d %H:%M:%S')
         if owner == None:
             owner = "None"
         fowner = owner
@@ -84,12 +83,12 @@ class LogManager():
             flogs = flogs.replace(l, "")
         
         if level >= self.CONSOLE_LOG_LEVEL:
-            print("[" + timestamp + "][" + self.levelstrc[level] + "][" + owner + "]:", logs)
+            print("[" + datetime.now().strftime('%H:%M:%S') + "][" + self.levelstrc[level] + "][" + owner + "]:", logs)
         if level >= self.FILE_LOG_LEVEL:
             try:
                 with open(self.latest_log, "a") as f:
                     f.writelines(
-                        "[" + timestamp + "][" + self.levelstr[level] + "][" + fowner + "]: " + flogs + "\n"
+                        "[" + datetime.now().strftime('%y-%m-%d %H:%M:%S') + "][" + self.levelstr[level] + "][" + fowner + "]: " + flogs + "\n"
                     )
             except BaseException:
                 pass
@@ -97,7 +96,7 @@ class LogManager():
 class Logger():
     manage = LogManager()
     def __init__(self, name):
-        self.name = name
+        self.name = name.split('.')[-1]
     def error(self, *msgs):
         self.manage.put(self.name, LOG_LEVEL.ERROR, msgs)
     def warn(self, *msgs):
@@ -109,6 +108,9 @@ class Logger():
 
 def getLogger(name = __name__):
     return Logger(name)
+
+LOGGER = getLogger(__name__)
+LOGGER.info('Logger load over')
 
 if __name__ == "__main__":
     LogManager().consile_log_level = LOG_LEVEL.DEBUG

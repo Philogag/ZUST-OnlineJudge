@@ -5,7 +5,7 @@ import pwd
 import grp
 
 from _judger import run, UNLIMITED
-from .compare.manager import checkAnswer
+from .compare.verifyManager import checkAnswer
 
 from lib.config import GlobalConf
 from lib.static import RESULT
@@ -25,15 +25,21 @@ def SystemMemeryCheck(size):  # MB
         time.sleep(0.2)
 
 # 测试运行单组case文件
-def JudgeCase(submition, case):
+def JudgeCase(submition, case, basepath, threadid):
+    gconf = LangConf[submition["lang"]]
     conf = LangConf[submition["lang"]]["run"]
     ret = {
         "case": case,
     }
+    
+    src_path = os.path.join(basepath, gconf["src_name"])
+    exe_path = os.path.join(basepath, gconf["exec_name"])
 
-    cmd = conf["cmd"]
-    cmd = cmd.replace("{max_memory_mb}", str(submition["mem_limit"]))
-    cmd = cmd.split(" ")
+    cmd = conf["cmd"] \
+        .replace("{src_path}", src_path) \
+        .replace("{exec_path}", exe_path) \
+        .replace("exec_path_base", basepath) \
+        .split(" ")
 
     SystemMemeryCheck(submition["mem_limit"])
 
@@ -47,16 +53,16 @@ def JudgeCase(submition, case):
         exe_path=cmd[0],
         args=cmd[1::],
         input_path= "./ProblemData/%d/%s.in" % (submition["pid"], case),
-        output_path="./temp/userout.txt",
-        error_path="./logs/RunTimeError.txt",
+        output_path=os.path.join(basepath, "userout.txt"),
+        error_path=os.path.join(basepath, "re.txt"),
         env=[],
-        log_path="./logs/sandbox.log",
+        log_path=os.path.join(basepath, "sandbox.log"),
         seccomp_rule_name=conf["seccomp_rule"],
         uid=RUN_USER_UID,
         gid=RUN_GROUP_GID,
         memory_limit_check_only=conf["memory_limit_check_only"]
     )
-    LOGGER.debug("Run return", str(result["result"]))
+    LOGGER.debug("thread-%d"%threadid, "Run return", str(result["result"]))
     
     for p, s in result.items():
         ret[p] = s
@@ -79,7 +85,7 @@ def JudgeCase(submition, case):
     
     if ret["result"] != RESULT.ACCEPT:
         try:
-            with open("./logs/RunTimeError.txt", "r+") as f:
+            with open(os.path.join(basepath, "re.txt"), "r+") as f:
                 ss = f.readline()
                 if ss != "":
                     ret["message"] = ss
@@ -87,7 +93,8 @@ def JudgeCase(submition, case):
             pass
         return ret
 
-    LOGGER.debug("Check output")
-    ret["result"] = checkAnswer(submition["pid"], case, submition["spj"])
+    LOGGER.debug("thread-%d"%threadid, "Check output")
+
+    ret["result"] = checkAnswer(submition["pid"], case, submition["spj"], basepath, threadid)
 
     return ret

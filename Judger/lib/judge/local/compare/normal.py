@@ -6,8 +6,8 @@ from lib.config import GlobalConf
 from lib.static import RESULT
 LOGGER = getLogger(__name__)
 
-def normalChecker(pid, case) -> (int, str):
-    filea = os.path.join(GlobalConf["path"], 'temp/userout.txt')
+def normalChecker(pid, case, basepath, threadid) -> (int, str):
+    filea = os.path.join(basepath, 'userout.txt')
     fileb = os.path.join(GlobalConf["path"], 'ProblemData/%d/%s.out' % (pid, case))
     
     ret = os.system("diff -qNZa " + filea + " " + fileb + " >/dev/null 2>&1") # 忽略所有行末空格

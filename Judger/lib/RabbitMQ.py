@@ -1,35 +1,51 @@
 # encoding: utf-8
-import pika
+
 import json
 import time
+import pika
 
 from .config import GlobalConf
 
 from .logger import getLogger
 LOGGER = getLogger(__name__)
 
+# 单例工具
+def singleton(cls, *args, **kw):
+    instances = {}
+
+    def _singleton():
+        if cls not in instances:
+            instances[cls] = cls(*args, **kw)
+        return instances[cls]
+
+    return _singleton
+
 ## 此类用于连接rabbitmq
+@singleton
 class RabbitmqConnecter:
-    connection = None
+    auth = connection = channel = None
 
     def __init__(self):
         self.queue = GlobalConf["judge queue"]
-        username = GlobalConf["username"]
-        password = GlobalConf["password"]
-        host = GlobalConf["queue host"]
-        port = GlobalConf["queue port"]
+        self.username = GlobalConf["username"]
+        self.password = GlobalConf["password"]
+        self.host = GlobalConf["queue host"]
+        self.port = GlobalConf["queue port"]
 
+        self.__connect()
+        
+    def __connect(self):
         # print(host, port, username, password, self.queue)
-        auth = pika.PlainCredentials(username, password)
-        self.connection = connection = pika.BlockingConnection(
-            pika.ConnectionParameters(host=host, port=port, credentials=auth)
+        self.auth = pika.PlainCredentials(self.username, self.password)
+        self.connection = pika.BlockingConnection(
+            pika.ConnectionParameters(host=self.host, port=self.port, credentials=self.auth)
         )
         if self.connection == None:
-            LOGGER.error("Connection failed!")
+            LOGGER.error("Connect failed!")
             return
         self.channel = self.connection.channel()
         self.channel.queue_declare(queue=self.queue, durable=True)
-        LOGGER.info("Connetion succeed!")
+        LOGGER.info("Connet succeed!")
 
     def __del__(self):
         if self.connection != None:
@@ -37,12 +53,24 @@ class RabbitmqConnecter:
         # LOGGER.info("Connection stop")
 
     def startListen(self, func):
-        if self.connection == None:
-            LOGGER.error("Connetion not start!")
-            return
-        self.channel.basic_consume(self.queue, func)
-        self.channel.start_consuming()
-
+        while True:
+            try: 
+                self.channel.basic_consume(self.queue, func)
+                self.channel.start_consuming()
+            except pika.exceptions.AMQPError:
+                LOGGER.error("RabbitMQ conetcion error. Trying reconect now.")
+                self.__connect()
+            except BaseException as e:
+                raise e
+    
+    def feedback(self, method):
+        while True:
+            try:
+                self.channel.basic_ack(delivery_tag=method.delivery_tag)
+                return True
+            except pika.exceptions.AMQPError:
+                LOGGER.error("RabbitMQ conetcion error. Trying reconect now.")
+                self.__connect()
 
 def test_Callback(ch, method, properties, body):  # 四个参数为标准格式
     print(ch, method, properties)
@@ -53,5 +81,5 @@ def test_Callback(ch, method, properties, body):  # 四个参数为标准格式
 
 
 if __name__ == "__main__":
-    queue = myRabbitmqConnecter()
+    queue = RabbitmqConnecter()
     queue.startListen(test_Callback)
