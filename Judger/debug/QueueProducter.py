@@ -34,16 +34,9 @@ class myRabbitmqConnecter:
         )
         print("Send a message to JudgeQueue")
 
-
-globaldir = {
-    "time_lim": 1000,
-    "mem_lim": 64,
-    "spj": False,
-    "submitId": 1,
-    "problemId": 1,
-    "judger": "Local",
-}
-
+code = ""
+with open("/home/yhr/Desktop/t.cpp", 'r') as f:
+    code = f.read()
 data1 = {
     "id": 1, 
     "lang": "c++", 
@@ -69,7 +62,7 @@ data3 = {
     "real_pid": "HDU-1000",
     "id": 3, 
     "lang": "c++", 
-    "code": "#include<cstdio>\nusing namespace std;\nint main()\n{\n\tint a,b;\n\twhile(scanf(\"%%d%%d\", &a, &b) == 2)\n\tprintf(\"%%d\n\", a + b)\n}", 
+    "code": code, 
     "pid": 2, 
     "spj": False, 
 }
@@ -86,8 +79,8 @@ if __name__ == "__main__":
     ID = 0
     rmqc = myRabbitmqConnecter()
     # for i in range(10):
-    rmqc.putIntoQueue(json.dumps(data1))
-    rmqc.putIntoQueue(json.dumps(data2))
-#     rmqc.putIntoQueue(json.dumps(data3))
-#     rmqc.putIntoQueue(json.dumps(data4))
+    # rmqc.putIntoQueue(json.dumps(data1))
+    # rmqc.putIntoQueue(json.dumps(data2))
+    rmqc.putIntoQueue(json.dumps(data3))
+    # rmqc.putIntoQueue(json.dumps(data4))
 

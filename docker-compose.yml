@@ -9,16 +9,17 @@ services:
       - RABBITMQ_DEFAULT_PASS=OnlineJudge
     ports: ["5672:5672", "15672:15672"]
 
-#   judger:
-#     image: registry.cn-hangzhou.aliyuncs.com/philogag/oj-judger:latest
-#     restart: always
-#     volumes:
-#       - "./Judger/language.json:/Judger/language.json"
-#       - "./Judger/conf.json:/Judger/conf.json"
-#       - "./Judger/ProblemData:/Judger/ProblemData"
-#       - "./Judger/Spj:/Judger/Spj"
-#     depends_on:
-#       - rabbitmq
-#     links:
-#       - rabbitmq:rabbitmq
-#     tty: true
+  judger:
+    image: registry.cn-hangzhou.aliyuncs.com/philogag/oj-judger:latest
+    restart: always
+    volumes:
+      - "./Judger/language.json:/Judger/language.json"
+      - "./Judger/conf.json:/Judger/conf.json"
+      - "./Judger/ProblemData:/Judger/ProblemData"
+      - "./Judger/Spj:/Judger/Spj"
+      - "./Judger/lib/Return.py:/Judger/lib/Return.py"
+    depends_on:
+      - rabbitmq
+    links:
+      - rabbitmq:rabbitmq
+    tty: true

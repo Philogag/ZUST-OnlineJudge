@@ -1,7 +1,7 @@
 import json
 from time import sleep
 
-from .Session import VJSession
+from .VJSession import VJSession
 
 from lib.static import RESULT
 from lib.config import GlobalConf

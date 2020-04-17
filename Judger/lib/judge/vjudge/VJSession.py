@@ -9,7 +9,7 @@ from .LanguageMap import Language
 from lib.config import GlobalConf
 from lib.logger import getLogger
 
-LOGGER = getLogger("__name__")
+LOGGER = getLogger(__name__)
 
 # 单例工具
 def singleton(cls, *args, **kw):
@@ -38,8 +38,9 @@ class VJSession():
         self.login()
 
     def login(self):
-        if self.cookies is not None and self.cookie_time - datetime.now() < timedelta(minutes=30):
+        if self.cookie_time is not None and self.cookie_time - datetime.now() < timedelta(minutes=30):
             return True
+        LOGGER.info("Reset Cookies")
         header = self.headers.copy()
         header["referer"] = self.baseurl
         logindata = {
@@ -47,13 +48,14 @@ class VJSession():
             "password": self.password
         }
         response = self.session.post(self.baseurl + "user/login", logindata, headers=header)
-        if response.status_code == 200:
-            self.cookies = response.cookies
+        
+        if response.text == "success":
             self.cookie_time = datetime.now()
-            LOGGER.info("Reset Cookies")
+            self.cookies = response.cookies
+            LOGGER.info("Login success.")
             return True
         else:
-            return False
+            raise BaseException("VJudge account login failed")
     
     # `lang` must be one of ["c", "c++", "java"] which is userd as a key at LanguageMap.py
     def submit(self, pid, lang, code):
