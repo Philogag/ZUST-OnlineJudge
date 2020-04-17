@@ -24,7 +24,7 @@ def singleton(cls, *args, **kw):
 class RabbitMQ:
     connection = None
 
-    def __init__(self,):
+    def __init__(self, ):
         self.queue = QUEUE_NAME
         self.username = RABBITMQ_USER
         self.password = RABBITMQ_PASS
@@ -35,13 +35,13 @@ class RabbitMQ:
         self.connection = connection = pika.BlockingConnection(
             pika.ConnectionParameters(host=self.host, port=self.port, credentials=self.auth)
         )
-        if self.connection == None:
+        if self.connection is None:
             return
         self.channel = self.connection.channel()
         self.channel.queue_declare(queue=self.queue, durable=True)
 
     def __del__(self):
-        if self.connection != None:
+        if self.connection is not None:
             self.connection.close()
         # LOGGER.info("Connection stop")
 

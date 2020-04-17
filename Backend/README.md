@@ -74,7 +74,17 @@ Return:
 ```
 Put into rabbtimq:
 ```json
-{"id": 1, "lang": "c++", "judge_method": 0, "code": "#include<iostream>\nusing namespace std;\nint main()\n{\n\tint a,b;\n\tcin >> a >> b;\n\tcout << a + b << endl;\n}", "pid": 1, "real_pid": -1, "spj": false, "time_limit": 1000, "mem_limit": 64}
+{
+  "id": 1, 
+  "lang": "c++", // or "c" or "java"
+  "judge_method": 0, 
+  "code": "#include<iostream>\nusing namespace std;\nint main()\n{\n\tint a,b;\n\tcin >> a >> b;\n\tcout << a + b << endl;\n}", 
+  "pid": 1, 
+  "real_pid": -1, 
+  "spj": false, 
+  "time_limit": 1000, 
+  "mem_limit": 64
+}
 ```
 
 #### `api/submition/admin/?token=(.*?)&op=(operator)` GET

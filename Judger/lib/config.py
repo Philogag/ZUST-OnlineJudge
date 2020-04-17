@@ -19,7 +19,7 @@ GlobalConf = {
     "judge thread": 4,
     # ----------------------
     #   HDU judger
-    "hdu enabled": False,
+    "vjudge enabled": False,
 }
 
 # main.py 的绝对路径

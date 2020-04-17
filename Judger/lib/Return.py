@@ -39,6 +39,7 @@ class Return:
 
         url = "http://" + GlobalConf["backend host"] + "/api/submition/judger/"
         
-        response = requests.post(url, data)
-        while response.status_code != 202:
-            response = requests.post(url, data)
+        # response = requests.post(url, data)
+        # while response.status_code != 202:
+        #     response = requests.post(url, data)
+        print("\n" + str(data) + "\n")

@@ -96,7 +96,10 @@ class LogManager():
 class Logger():
     manage = LogManager()
     def __init__(self, name):
-        self.name = name.split('.')[-1]
+        sp = name.split('.')
+        self.name = sp[-1]
+        if self.name == "__init__":
+            self.name = sp[-2] + '.__init__'
     def error(self, *msgs):
         self.manage.put(self.name, LOG_LEVEL.ERROR, msgs)
     def warn(self, *msgs):

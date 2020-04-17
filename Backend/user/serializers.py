@@ -10,6 +10,7 @@ class UserSerializer(serializers.ModelSerializer):
             'user_level'
         ]
 
+
 class UserAuthOnlySerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -17,4 +18,3 @@ class UserAuthOnlySerializer(serializers.ModelSerializer):
             'username',
             'token',
         ]
-

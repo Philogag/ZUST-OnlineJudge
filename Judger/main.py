@@ -3,8 +3,9 @@ import shutil
 import time
 import pika
 
+
 from lib.RabbitMQ import RabbitmqConnecter
-from lib.JudgeManager import JudgeThread, queueGetCall
+from lib.JudgeManager import JudgeThread
 from lib.config import GlobalConf
 from lib.logger import getLogger, LogManager, LOG_LEVEL
 from lib.judge.local.complie import COMPILER_USER_UID, COMPILER_GROUP_GID
@@ -30,15 +31,6 @@ for i in range(GlobalConf["judge thread"]):
 for th in ths:
     th.start()
 
-rmq = RabbitmqConnecter()
-while True:
-    try:
-        rmq.startListen(queueGetCall)
-    except KeyboardInterrupt:
-        break
-
-for th in ths:
-    th.callquit()
 for th in ths:
     th.join()
 

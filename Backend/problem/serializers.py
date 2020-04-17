@@ -2,6 +2,7 @@ from rest_framework import serializers
 
 from .models import Problem
 
+
 class ProblemListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Problem
@@ -15,6 +16,7 @@ class ProblemListSerializer(serializers.ModelSerializer):
             'tot_cnt',
             'ac_cnt'
         ]
+
 
 class ProblemSerializer(serializers.ModelSerializer):
     class Meta:

@@ -44,12 +44,50 @@ globaldir = {
     "judger": "Local",
 }
 
-data = {"id": 1, "lang": "c++", "judge_method": 0, "code": "#include<iostream>\nusing namespace std;\nint main()\n{\n\tint a,b;\n\tcin >> a >> b;\n\tcout << a + b << endl;\n}", "pid": 1, "real_pid": -1, "spj": False, "time_limit": 1000, "mem_limit": 64}
-
-
+data1 = {
+    "id": 1, 
+    "lang": "c++", 
+    "judge_method": 0, 
+    "code": "#include<iostream>\nusing namespace std;\nint main()\n{\n\tint a,b;\n\tcin >> a >> b;\n\tcout << a + b << endl;\n}", 
+    "pid": 1, 
+    "real_pid": "", 
+    "spj": False, 
+    "time_limit": 1000, 
+    "mem_limit": 64
+}
+data2 = {
+    "judge_method": 1, 
+    "real_pid": "HDU-1000",
+    "id": 2, 
+    "lang": "c++", 
+    "code": "#include<iostream>\nusing namespace std;\nint main()\n{\n\tint a,b;\n\twhile(cin >> a >> b)\n\tcout << a + b << endl;\n}", 
+    "pid": 2, 
+    "spj": False, 
+}
+data3 = {
+    "judge_method": 1, 
+    "real_pid": "HDU-1000",
+    "id": 3, 
+    "lang": "c++", 
+    "code": "#include<cstdio>\nusing namespace std;\nint main()\n{\n\tint a,b;\n\twhile(scanf(\"%%d%%d\", &a, &b) == 2)\n\tprintf(\"%%d\n\", a + b)\n}", 
+    "pid": 2, 
+    "spj": False, 
+}
+data4 = {
+    "judge_method": 1, 
+    "real_pid": "HDU-1000",
+    "id": 4, 
+    "lang": "c++", 
+    "code": "#include<iostream>\n#include<cstdio>\nint main()\n{\n\tint a,b;\n\twhile(std::cin >> a >> b)\n\tstd::cout << a + b << std::endl;\n}", 
+    "pid": 2, 
+    "spj": False, 
+}
 if __name__ == "__main__":
     ID = 0
     rmqc = myRabbitmqConnecter()
     # for i in range(10):
-    rmqc.putIntoQueue(json.dumps(data))
+    rmqc.putIntoQueue(json.dumps(data1))
+    rmqc.putIntoQueue(json.dumps(data2))
+#     rmqc.putIntoQueue(json.dumps(data3))
+#     rmqc.putIntoQueue(json.dumps(data4))
 

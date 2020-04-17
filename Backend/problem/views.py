@@ -11,6 +11,7 @@ from statue_api import Statue
 from .models import Problem, JUDGE_METHOD
 from .serializers import ProblemSerializer, ProblemListSerializer
 
+
 class ProblemAllView(APIView):
     def get(self, request):
         """
@@ -20,15 +21,17 @@ class ProblemAllView(APIView):
         serializer = ProblemListSerializer(problems, many=True)
         return JsonResponse(serializer.data, safe=False)
 
+
 class ProblemView(APIView):
-    def get(self, request, ID):
+    @staticmethod
+    def get(self, request, pid):
         """
         题目
         """
         serializer = None
         try:
-            submition = Problem.objects.get(id=ID)
-            serializer = ProblemSerializer(submition)
+            submission = Problem.objects.get(id=pid)
+            serializer = ProblemSerializer(submission)
             return JsonResponse(serializer.data, safe=False)
         except BaseException:
             return Statue(
@@ -36,6 +39,7 @@ class ProblemView(APIView):
                 'Problem not found'
             ).to_JsonResponse()
 
+    @staticmethod
     def post(self, request):
         """
         新建题目
@@ -48,14 +52,13 @@ class ProblemView(APIView):
 
         if serializer.is_valid():
             serializer.save()
-            
+
             return JsonResponse(
                 serializer.data,
                 status=status.HTTP_201_CREATED
             )
-        
+
         return Statue(
             status.HTTP_400_BAD_REQUEST,
             serializer.errors
         ).to_JsonResponse()
-                

@@ -62,7 +62,7 @@ def JudgeCase(submition, case, basepath, threadid):
         gid=RUN_GROUP_GID,
         memory_limit_check_only=conf["memory_limit_check_only"]
     )
-    LOGGER.debug("thread-%d"%threadid, "Run return", str(result["result"]))
+    LOGGER.debug("[%d]"%threadid, "Run return", str(result["result"]))
     
     for p, s in result.items():
         ret[p] = s
@@ -93,7 +93,7 @@ def JudgeCase(submition, case, basepath, threadid):
             pass
         return ret
 
-    LOGGER.debug("thread-%d"%threadid, "Check output")
+    LOGGER.debug("[%d]"%threadid, "Check output")
 
     ret["result"] = checkAnswer(submition["pid"], case, submition["spj"], basepath, threadid)
 

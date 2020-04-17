@@ -2,14 +2,13 @@
   "backend host": "localhost:8000",
   "judger keygen": "it is right",
 
-  "queue host": "localhost",
+  "queue host": "rabbitmq",
   "queue port": 5672,
-
   "username": "OnlineJudge",
   "password": "OnlineJudge",
   "judge queue": "JudgeQueue",
 
-  "hdu enabled": false,
-  "hdu username": "hhhh",
-  "hdu password": "12345678"
+  "vjudge enabled": true,
+  "vjudge username": "xxx",
+  "vjudge password": "xxx"
 }

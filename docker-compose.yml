@@ -12,10 +12,11 @@ services:
 #   judger:
 #     image: registry.cn-hangzhou.aliyuncs.com/philogag/oj-judger:latest
 #     restart: always
-#     command: "bash"
 #     volumes:
-#       - "./Judger:/Judger"
-# #       - "./Judger/ProblemData:/Judger/ProblemData"
+#       - "./Judger/language.json:/Judger/language.json"
+#       - "./Judger/conf.json:/Judger/conf.json"
+#       - "./Judger/ProblemData:/Judger/ProblemData"
+#       - "./Judger/Spj:/Judger/Spj"
 #     depends_on:
 #       - rabbitmq
 #     links:
